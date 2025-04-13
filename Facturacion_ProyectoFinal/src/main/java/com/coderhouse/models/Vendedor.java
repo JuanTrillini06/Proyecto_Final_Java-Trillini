@@ -1,10 +1,13 @@
 package com.coderhouse.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,7 +32,10 @@ public class Vendedor {
 	
 	@Column(nullable = false, unique = true)
 	private String legajo;
-
+	
+	@OneToMany(mappedBy = "vendedor")
+	private List<Factura> facturas;
+	
 	public Vendedor() {
 		super();
 	}
@@ -89,6 +95,15 @@ public class Vendedor {
 
 	public void setLegajo(String legajo) {
 		this.legajo = legajo;
+	}
+	
+	
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
 	}
 
 	@Override

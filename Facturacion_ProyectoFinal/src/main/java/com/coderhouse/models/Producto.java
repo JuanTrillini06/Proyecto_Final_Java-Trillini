@@ -1,10 +1,15 @@
 package com.coderhouse.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,7 +20,7 @@ public class Producto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String nombre;
 	
 	@Column(nullable = false, unique = true)
@@ -27,6 +32,13 @@ public class Producto {
 	@Column(nullable = false)
 	private int stock;
 
+	@ManyToMany
+	@JoinTable(
+			name = "producto_detalle_factura",
+			joinColumns = @JoinColumn(name = "idProducto"),
+			inverseJoinColumns = @JoinColumn(name = "idDetalleFactura")
+			)
+	private List<DetalleFactura> detallesFacturas;
 	public Producto() {
 		super();
 	}
@@ -77,6 +89,16 @@ public class Producto {
 
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+	
+	
+
+	public List<DetalleFactura> getDetallesFacturas() {
+		return detallesFacturas;
+	}
+
+	public void setDetallesFacturas(List<DetalleFactura> detallesFacturas) {
+		this.detallesFacturas = detallesFacturas;
 	}
 
 	@Override

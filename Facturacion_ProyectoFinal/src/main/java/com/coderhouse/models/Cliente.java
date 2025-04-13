@@ -1,10 +1,13 @@
 package com.coderhouse.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,6 +32,9 @@ public class Cliente {
 	
 	@Column(nullable = false, unique = true)
 	private int telefono;
+	
+	@OneToMany(mappedBy = "cliente")
+	private List<Factura> facturas;
 
 	public Cliente() {
 		super();
@@ -89,6 +95,16 @@ public class Cliente {
 
 	public void setTelefono(int telefono) {
 		this.telefono = telefono;
+	}
+	
+	
+
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
 	}
 
 	@Override
