@@ -22,8 +22,6 @@ public class DetalleFactura {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false, insertable=false, updatable=false)
-	private Long idFactura;
 	
 	@Column(nullable = false)
 	private Long idProducto;
@@ -51,10 +49,9 @@ public class DetalleFactura {
 		super();
 	}
 
-	public DetalleFactura(Long idFactura, Long idProducto, Long idMetodoDePago, String tipoDeFactura, int cantidad,
+	public DetalleFactura(Long idProducto, Long idMetodoDePago, String tipoDeFactura, int cantidad,
 			int subtotal) {
 		super();
-		this.idFactura = idFactura;
 		this.idProducto = idProducto;
 		this.idMetodoDePago = idMetodoDePago;
 		this.tipoDeFactura = tipoDeFactura;
@@ -68,14 +65,6 @@ public class DetalleFactura {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getIdFactura() {
-		return idFactura;
-	}
-
-	public void setIdFactura(Long idFactura) {
-		this.idFactura = idFactura;
 	}
 
 	public Long getIdProducto() {
@@ -130,7 +119,7 @@ public class DetalleFactura {
 
 	@Override
 	public String toString() {
-		return "DetalleFactura [id=" + id + ", idFactura=" + idFactura + ", idProducto=" + idProducto
+		return "DetalleFactura [id=" + id + ", idProducto=" + idProducto
 				+ ", idMetodoDePago=" + idMetodoDePago + ", cantidad=" + cantidad + ", subtotal=" + subtotal + "]";
 	}
 
