@@ -19,7 +19,7 @@ import com.coderhouse.services.FacturaServicio;
 
 @RestController
 @RequestMapping("/api/facturas")
-public class FacturaController {
+public class FacturaController<CompraDTO> {
 
 	@Autowired
 	private FacturaServicio facturaServicio;
@@ -67,6 +67,20 @@ public class FacturaController {
 			return ResponseEntity.notFound().build(); //404
 		}catch(Exception err) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); //500
+		}
+	}
+	
+	@PostMapping("/compra")
+	public ResponseEntity<?> CompraDTO(@RequestBody com.coderhouse.dto.CompraDTO dto) {
+		try {
+			Factura factura = facturaServicio.compra(dto);
+			return ResponseEntity.ok(factura); // 200
+		}catch (IllegalStateException err) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(err.getMessage()); // 409
+		} catch (IllegalArgumentException err) {
+			return ResponseEntity.notFound().build(); // 404
+		} catch (Exception err) {
+			return ResponseEntity.internalServerError().build(); // 500
 		}
 	}
 }

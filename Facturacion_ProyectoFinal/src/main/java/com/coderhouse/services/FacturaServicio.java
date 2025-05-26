@@ -5,9 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.coderhouse.dto.CompraDTO;
 import com.coderhouse.interfaces.CRUDInterface;
+import com.coderhouse.models.Cliente;
 import com.coderhouse.models.Factura;
+import com.coderhouse.models.Producto;
 import com.coderhouse.repository.FacturaRepository;
+import com.coderhouse.repository.ClienteRepository;
+import com.coderhouse.repository.ProductoRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,6 +21,12 @@ public class FacturaServicio implements CRUDInterface<Factura, Long> {
 
 	@Autowired
 	private FacturaRepository facturaRepository;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private ProductoRepository productoRepository;
 	
 	@Override
 	public List<Factura> findAll() {
@@ -39,14 +50,15 @@ public class FacturaServicio implements CRUDInterface<Factura, Long> {
 	public Factura update(Long id, Factura facturaActualizado) {
 		Factura factura = facturaRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Factura no encontrada"));
 		
-		if(facturaActualizado.getNombreEmpresa() != null && !facturaActualizado.getNombreEmpresa().isEmpty()) {
-			factura.setNombreEmpresa(facturaActualizado.getNombreEmpresa());
-		}
 		if(facturaActualizado.getNumeroFactura() != 0) {
 			factura.setNumeroFactura(facturaActualizado.getNumeroFactura());
 		}
-		if(facturaActualizado.getMontoTotal() != 0) {
-			factura.setMontoTotal(facturaActualizado.getMontoTotal());
+		if(facturaActualizado.getCantidad() != 0) {
+			factura.setCantidad(facturaActualizado.getCantidad());
+		}
+
+		if(facturaActualizado.getSubTotal() != 0) {
+			factura.setSubTotal(facturaActualizado.getSubTotal());
 		}
 		return facturaRepository.save(factura);
 	}
@@ -58,4 +70,24 @@ public class FacturaServicio implements CRUDInterface<Factura, Long> {
 		}
 		facturaRepository.deleteById(id);
 	}
+	
+	@Transactional
+	public Factura compra(CompraDTO dto) {
+		
+		Factura factura = facturaRepository.findById(dto.getFacturaId()).orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+		
+		Cliente cliente = clienteRepository.findById(dto.getClienteId()).orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+		
+		Producto producto = productoRepository.findById(dto.getProductoId()).orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+		
+		cliente.getFacturas().add(factura);
+		
+		factura.getProductos().add(producto);
+		
+		clienteRepository.save(cliente);
+		
+		return facturaRepository.save(factura);
+			
+	}
+
 }

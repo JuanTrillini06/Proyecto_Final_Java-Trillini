@@ -1,6 +1,7 @@
 package com.coderhouse.models;
 
-import java.time.LocalDateTime;
+
+
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -9,8 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,57 +23,56 @@ public class Factura {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false)
-	private String nombreEmpresa; // Colocar el nombre de la empresa para dejarla fija, se da la opcion para poder cambiarla dependiendo la empresa
-	
 	@Column(nullable = false, unique = true)
 	private int numeroFactura;
 	
-	private LocalDateTime createdAt;
+	@Column(nullable = false)
+	private int cantidad;
+	
 	
 	@Column(nullable = false)
-	private float montoTotal;
+	private float subTotal;
 	
-	@ManyToOne
-	@JoinColumn(name = "idVendedor")
-	private Vendedor vendedor;
 	
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
 	private Cliente cliente;
 	
-	@ManyToOne
-	@JoinColumn(name = "idMetodo")
-	private MetodoDePago metodoDePago;
-	
-	@OneToMany(mappedBy = "factura")
-	private List<DetalleFactura> detalles;
+    @ManyToMany
+    @JoinTable(
+        name = "factura_producto",
+        joinColumns = @JoinColumn(name = "factura_id"),
+        inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private List<Producto> productos;
+
+
 	
 	public Factura() {
 		super();
 	}
 
-	public Factura(String nombreEmpresa,int numeroFactura,  float montoTotal) {
+	public Factura(int numeroFactura,int cantidad,  float subTotal) {
 		super();
-		this.nombreEmpresa = nombreEmpresa;
 		this.numeroFactura = numeroFactura;
-		this.montoTotal = montoTotal;
+		this.cantidad = cantidad;
+		this.subTotal = subTotal;
 	}
 
+	public List<Producto> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<Producto> productos) {
+		this.productos = productos;
+	}
+	
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getNombreEmpresa() {
-		return nombreEmpresa;
-	}
-
-	public void setNombreEmpresa(String nombreEmpresa) {
-		this.nombreEmpresa = nombreEmpresa;
 	}
 
 	public int getNumeroFactura() {
@@ -81,25 +82,23 @@ public class Factura {
 	public void setNumeroFactura(int numeroFactura) {
 		this.numeroFactura = numeroFactura;
 	}
-
-	public float getMontoTotal() {
-		return montoTotal;
+	
+	public int getCantidad() {
+		return cantidad;
 	}
 
-	public void setMontoTotal(float montoTotal) {
-		this.montoTotal = montoTotal;
-	}
-	
-	
-	public Vendedor getVendedor() {
-		return vendedor;
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 
-	public void setVendedor(Vendedor vendedor) {
-		this.vendedor = vendedor;
+	public float getSubTotal() {
+		return subTotal;
 	}
-	
-	
+
+	public void setSubTotal(float subTotal) {
+		this.subTotal = subTotal;
+	}
+
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -109,35 +108,9 @@ public class Factura {
 	}
 	
 
-	public MetodoDePago getMetodoDePago() {
-		return metodoDePago;
-	}
-
-	public void setMetodoDePago(MetodoDePago metodoDePago) {
-		this.metodoDePago = metodoDePago;
-	}
-	
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public List<DetalleFactura> getDetalles() {
-		return detalles;
-	}
-
-	public void setDetalles(List<DetalleFactura> detalles) {
-		this.detalles = detalles;
-	}
-
 	@Override
 	public String toString() {
-		return "Factura [id=" + id + ", nombreEmpresa=" + nombreEmpresa + ", numeroFactura=" + numeroFactura
-				+ ", montoTotal=" + montoTotal + "]";
-	}
-
-	
+		return "Factura [numeroFactura=" + numeroFactura + ", cantidad=" + cantidad + ", subTotal=" + subTotal
+				+ ", cliente=" + cliente + "]";
+	}	
 }

@@ -45,14 +45,8 @@ public class ClienteServicio implements CRUDInterface<Cliente, Long> {
 		if(clienteActualizado.getApellido() != null && !clienteActualizado.getApellido().isEmpty()) {
 			cliente.setApellido(clienteActualizado.getApellido());
 		}
-		if(clienteActualizado.getEmail() != null && !clienteActualizado.getEmail().isEmpty()) {
-			cliente.setEmail(clienteActualizado.getEmail());
-		}
 		if(clienteActualizado.getDni() != 0) {
 			cliente.setDni(clienteActualizado.getDni());
-		}
-		if(clienteActualizado.getTelefono() != 0) {
-			cliente.setTelefono(clienteActualizado.getTelefono());
 		}
 		return clienteRepository.save(cliente);
 	}

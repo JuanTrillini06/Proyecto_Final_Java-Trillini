@@ -42,9 +42,6 @@ public class ProductoServicio implements CRUDInterface<Producto, Long> {
 		if(productoActualizado.getNombre() != null && !productoActualizado.getNombre().isEmpty()) {
 			producto.setNombre(productoActualizado.getNombre());
 		}
-		if(productoActualizado.getCodigo() != null && !productoActualizado.getCodigo().isEmpty()) {
-			producto.setCodigo(productoActualizado.getCodigo());
-		}
 		if(productoActualizado.getPrecioUnitario() != 0) {
 			producto.setPrecioUnitario(productoActualizado.getPrecioUnitario());
 		}

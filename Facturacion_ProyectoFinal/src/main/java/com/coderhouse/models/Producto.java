@@ -1,5 +1,6 @@
 package com.coderhouse.models;
 
+
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -7,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -23,32 +22,33 @@ public class Producto {
 	@Column(nullable = false)
 	private String nombre;
 	
-	@Column(nullable = false, unique = true)
-	private String codigo;
-	
 	@Column(nullable = false)
 	private float precioUnitario;
 	
 	@Column(nullable = false)
 	private int stock;
 
-	@ManyToMany
-	@JoinTable(
-			name = "producto_detalle_factura",
-			joinColumns = @JoinColumn(name = "idProducto"),
-			inverseJoinColumns = @JoinColumn(name = "idDetalleFactura")
-			)
-	private List<DetalleFactura> detallesFacturas;
+    @ManyToMany(mappedBy = "productos")
+    private List<Factura> facturas;
+
+	
 	public Producto() {
 		super();
 	}
 
-	public Producto(String nombre, String codigo, float precioUnitario, int stock) {
+	public Producto(String nombre, float precioUnitario, int stock) {
 		super();
 		this.nombre = nombre;
-		this.codigo = codigo;
 		this.precioUnitario = precioUnitario;
 		this.stock = stock;
+	}
+
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
 	}
 
 	public Long getId() {
@@ -67,13 +67,6 @@ public class Producto {
 		this.nombre = nombre;
 	}
 
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
 
 	public float getPrecioUnitario() {
 		return precioUnitario;
@@ -91,19 +84,9 @@ public class Producto {
 		this.stock = stock;
 	}
 	
-	
-
-	public List<DetalleFactura> getDetallesFacturas() {
-		return detallesFacturas;
-	}
-
-	public void setDetallesFacturas(List<DetalleFactura> detallesFacturas) {
-		this.detallesFacturas = detallesFacturas;
-	}
-
 	@Override
 	public String toString() {
-		return "Producto [id=" + id + ", nombre=" + nombre + ", codigo=" + codigo + ", precioUnitario=" + precioUnitario
+		return "Producto [id=" + id + ", nombre=" + nombre + ", codigo=" + ", precioUnitario=" + precioUnitario
 				+ ", stock=" + stock + "]";
 	}
 	
