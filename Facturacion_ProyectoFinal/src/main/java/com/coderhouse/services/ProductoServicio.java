@@ -1,6 +1,7 @@
 package com.coderhouse.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,4 +59,47 @@ public class ProductoServicio implements CRUDInterface<Producto, Long> {
 		}
 		productoRepository.deleteById(id);
 	}
+
+
+	public Boolean validarProductos(Producto p, Integer c){
+
+		Boolean state = false; 
+
+		Optional<Producto> producto = productoRepository.findById(p.getId());
+
+		// Recibo el producto (valido si existe o no ) y la cantidad (valido si hay stock para ese mismo.)
+		if (producto.isPresent()){
+			Producto prod = producto.get();
+
+			if (prod.getStock() >= c){
+				System.out.println("" + "stock: " + prod.getStock() + " CANTIDAD: " + c);
+				this.descontarStock(prod, c); // Actualizo stock 
+				state = true;
+			} else {
+				state = false;
+			}
+
+		} else {
+			state = false;
+		}
+
+		return state;
+		
+
+	}
+
+	public void descontarStock(Producto p, Integer cantidadDes){
+		
+		Integer nuevoStock = (p.getStock() - cantidadDes);
+		p.setStock(nuevoStock);
+		productoRepository.save(p);
+
+	}
+
+
+
+
+
+
+
 }

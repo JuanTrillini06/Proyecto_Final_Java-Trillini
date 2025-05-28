@@ -1,11 +1,16 @@
 package com.coderhouse.services;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.coderhouse.dto.CompraDTO;
+import com.coderhouse.dto.LineasDTO;
 import com.coderhouse.interfaces.CRUDInterface;
 import com.coderhouse.models.Cliente;
 import com.coderhouse.models.Factura;
@@ -27,6 +32,9 @@ public class FacturaServicio implements CRUDInterface<Factura, Long> {
 	
 	@Autowired
 	private ProductoRepository productoRepository;
+
+	@Autowired
+	private ProductoServicio productoServicio; // Servicio para validar el producto.
 	
 	@Override
 	public List<Factura> findAll() {
@@ -73,20 +81,55 @@ public class FacturaServicio implements CRUDInterface<Factura, Long> {
 	
 	@Transactional
 	public Factura compra(CompraDTO dto) {
+	
+		// Comprobante que se va a ir cargando los datos y va a ser devuelto. 
+		Factura comprobante = new Factura();
 		
-		Factura factura = facturaRepository.findById(dto.getFacturaId()).orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+		Optional<Cliente> c = clienteRepository.findById(dto.getCliente().getId());
+		ArrayList<Producto> listaProductos = new ArrayList<>();
+		Integer cantidad = 0;
+		Float subtotal = 0.0f; 
+
+
+		// Validamos cliente
+		if (c.isPresent()){
+
+			Cliente cli = c.get();
+			comprobante.setCliente(cli);
+
+			// Validamos productos
+			for (LineasDTO l : dto.getLineas()){
+
+				if(productoServicio.validarProductos(l.getProducto(), l.getCantidad())){
+					
+					// Obtengo el obj producto.
+					Optional<Producto> pOptional = productoRepository.findById(l.getProducto().getId());
+					listaProductos.add(pOptional.get());
+
+					cantidad+=l.getCantidad();
+					subtotal+=pOptional.get().getPrecioUnitario();
+
+					
+					comprobante.setProductos(listaProductos);
+				
+				} else {
+					break; 
+				}
+
+			}
+			comprobante.setCantidad(cantidad);
+			comprobante.setSubTotal(subtotal);
+			comprobante.setNumeroFactura((int) (Math.random()*200)+1); //Numero de factura aleatorio
+			comprobante.setFecha(LocalDate.now()); // Fecha en la que se crea el comprobante. 
+			facturaRepository.save(comprobante); // Registro el comprobante
+
+		} else {
+			
+			
 		
-		Cliente cliente = clienteRepository.findById(dto.getClienteId()).orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
-		
-		Producto producto = productoRepository.findById(dto.getProductoId()).orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-		
-		cliente.getFacturas().add(factura);
-		
-		factura.getProductos().add(producto);
-		
-		clienteRepository.save(cliente);
-		
-		return facturaRepository.save(factura);
+		}
+
+		return comprobante;
 			
 	}
 

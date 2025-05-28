@@ -1,35 +1,30 @@
 package com.coderhouse.dto;
 
+import java.util.ArrayList;
+
+import com.coderhouse.models.Cliente;
+
 public class CompraDTO {
 	
-	private Long facturaId;
-	
-	private Long clienteId;
-	
-	private Long productoId;
+	// Atrb
+	private Cliente cliente;
+	private ArrayList<LineasDTO> lineas; 
 
-	public Long getFacturaId() {
-		return facturaId;
+	//Meth
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setFacturaId(Long facturaId) {
-		this.facturaId = facturaId;
+	public void setCliente(Cliente c) {
+		this.cliente = c;
 	}
 
-	public Long getClienteId() {
-		return clienteId;
+	public ArrayList<LineasDTO> getLineas() {
+		return lineas;
 	}
 
-	public void setClienteId(Long clienteId) {
-		this.clienteId = clienteId;
-	}
-
-	public Long getProductoId() {
-		return productoId;
-	}
-
-	public void setProductoId(Long productoId) {
-		this.productoId = productoId;
+	public void setLineas(ArrayList<LineasDTO> lineasComprobante) {
+		this.lineas = lineasComprobante;
 	}
 
 }

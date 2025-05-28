@@ -2,7 +2,11 @@ package com.coderhouse.models;
 
 
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+
+import org.springframework.cglib.core.Local;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +36,9 @@ public class Factura {
 	
 	@Column(nullable = false)
 	private float subTotal;
+
+	@Column(nullable = false)
+	private LocalDate fechaCreacion; 
 	
 	
 	@ManyToOne
@@ -106,11 +113,19 @@ public class Factura {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
+
+	public LocalDate getFecha(){
+		return fechaCreacion;
+	}
+
+	public void setFecha(LocalDate fecha){
+		this.fechaCreacion = fecha;
+	}
 	
 
 	@Override
 	public String toString() {
 		return "Factura [numeroFactura=" + numeroFactura + ", cantidad=" + cantidad + ", subTotal=" + subTotal
-				+ ", cliente=" + cliente + "]";
+				+ ", cliente=" + cliente.getNombre() + " " + cliente.getApellido()  + "]";
 	}	
 }
